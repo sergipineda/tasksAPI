@@ -71,7 +71,7 @@ class TaskController extends Controller
         }
         return Response::json([
             'data' => $task->toArray()
-        ]);
+        ], 200);
     }
 
     /**
