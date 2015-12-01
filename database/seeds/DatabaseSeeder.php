@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
     private function seedTags($faker){
         foreach (range(0,100) as $number){
             $tag= new Tag();
-
+            $tag-> done= $faker->boolean();
             $tag-> name= $faker->name();
             $tag->save();
         }

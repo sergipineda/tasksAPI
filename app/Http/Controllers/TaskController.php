@@ -22,7 +22,7 @@ class TaskController extends Controller
 
         $tasks = Task::all();
         return Response::json([
-            'data' => $tasks->toArray()
+            'data' => $this->transformCollection($tasks)
         ],200);
     }
 
@@ -70,7 +70,7 @@ class TaskController extends Controller
             ], 404);
         }
         return Response::json([
-            'data' => $task->toArray()
+            'data' => $this->transform($task)
         ], 200);
     }
 
@@ -119,5 +119,22 @@ class TaskController extends Controller
         $task->priority = $request->priority;
         $task->done = $request->done;
         $task->save();
+    }
+
+    private function transformCollection($tasks){
+        return arra_map([$this, 'transform'], $tasks->toArray());
+    }
+    private function transform($task)
+    {
+
+
+            return [
+                'name' => $task['name'],
+                'priority' => $task['priority'],
+                'done' => $task['done']
+            ];
+
+
+
     }
 }
