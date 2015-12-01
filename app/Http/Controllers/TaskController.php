@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+
 
 class TaskController extends Controller
 {
@@ -17,7 +19,11 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return Task::all();
+
+        $tasks = Task::all();
+        return Response::json([
+            'data' => $tasks->toArray()
+        ],200);
     }
 
     /**
@@ -51,9 +57,21 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $task = Task::findorFail($id);
+        $task = Task::find($id);
        // $task = Task::where('id',$id)->first();
-        return $task;
+
+        if (! $task){
+            return Response::json([
+
+                'error' => [
+                    'message' => 'La tasca no existeix',
+                    'code'
+                ]
+            ], 404);
+        }
+        return Response::json([
+            'data' => $task->toArray()
+        ]);
     }
 
     /**
