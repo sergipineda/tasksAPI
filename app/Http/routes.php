@@ -19,3 +19,14 @@ Route::get('/', function () {
 
 Route::resource('tasks', 'TaskController');
 Route::resource('tags', 'TagController');
+
+Route::get('task','TaskController@index');
+Route::get('task/{id}','TaskController@show');
+Route::post('task','TaskController@store');
+Route::put('task/{id}','TaskController@update');
+Route::delete('task/{id}','TaskController@destroy');
+Route::get('tag','TagController@index');
+Route::get('tag/{id}','TagController@show');
+Route::post('tag','TagController@store');
+Route::put('tag/{id}','TagController@update');
+Route::delete('tag/{id}','TagController@destroy');
