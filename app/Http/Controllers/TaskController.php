@@ -19,6 +19,7 @@ class TaskController extends Controller
     public function __construct(TaskTransformer $taskTransformer)
     {
         $this->TaskTransformer = $taskTransformer;
+        $this->middleware('auth.basic', ['only' => 'store']);
     }
 
     /**
@@ -32,9 +33,10 @@ class TaskController extends Controller
         $tasks = Task::all();
 
 
-        return Response::json([
-           $this->TaskTransformer->transform($tasks)
-        ],200);
+        $task = Task::all();
+        return $this->respond([
+            'data' => $this->taskTransformer->transformCollection($task->all())
+        ]);
     }
 
     /**
@@ -53,10 +55,16 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        $task = new Task();
-        $this->saveTask($request, $task);
+
+        if (! Input::get('name') or ! Input::get('done') or ! Input::get('priority'))
+        {
+            return $this->setStatusCode(IlluminateResponse::HTTP_UNPROCESSABLE_ENTITY)
+                ->respondWithError('Parameters failed validation for a task.');
+        }
+        Task::create(Input::all());
+        return $this->respondCreated('Task successfully created.');
 
     }
 

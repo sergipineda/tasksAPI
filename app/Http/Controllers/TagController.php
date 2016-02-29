@@ -3,13 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Tag;
+use App\Transformers\TagTransformer;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Symfony\Component\Console\Input\Input;
 
 class TagController extends Controller
 {
+    /**
+     * TaskController constructor.
+     */
+    public function __construct(TagTransformer $tagTransformer)
+    {
+        $this->TagTransformer = $tagTransformer;
+        $this->middleware('auth.basic', ['only' => 'store']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +29,14 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Tag::all();
+
+        $tags = Tag::all();
+
+
+        $tag = Tag::all();
+        return $this->respond([
+            'data' => $this->tagTransformer->transformCollection($tag->all())
+        ]);
     }
 
     /**
@@ -36,10 +55,16 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        $tag = new Tag();
-        $this->saveTag($request, $tag);
+
+        if (! Input::get('name') or ! Input::get('done') or ! Input::get('priority'))
+        {
+            return $this->setStatusCode(IlluminateResponse::HTTP_UNPROCESSABLE_ENTITY)
+                ->respondWithError('Parameters failed validation for a tag.');
+        }
+        Tag::create(Input::all());
+        return $this->respondCreated('Tag successfully created.');
 
     }
 
@@ -51,9 +76,22 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        $tag = Tag::findorFail($id);
-        //$tag = Tag::where('id',$id)->first();
-        return $tag;
+
+        $tag = Tag::find($id);
+        // $task = Task::where('id',$id)->first();
+
+        if (! $tag){
+            return Response::json([
+
+                'error' => [
+                    'message' => 'La tag no existeix',
+                    'code'
+                ]
+            ], 404);
+        }
+        return Response::json([
+            $this->tagTransfomer->transform($tag)
+        ], 200);
     }
 
     /**
@@ -76,7 +114,7 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tag = Tag::findorFail($id);
+        $tag =  Tag::findorFail($id);
         $this->saveTag($request, $tag);
     }
 
@@ -98,6 +136,9 @@ class TagController extends Controller
     public function saveTag(Request $request, $tag)
     {
         $tag->name = $request->name;
+        $tag->priority = $request->priority;
+        $tag->done = $request->done;
         $tag->save();
     }
+
 }

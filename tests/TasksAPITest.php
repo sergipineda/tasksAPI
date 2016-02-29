@@ -39,8 +39,8 @@ class TasksAPITest extends TestCase
     {
         $task = $this->createFakeTask();
         $this->get('/task/' . $task->id)
-                ->seeJsonContains(['name' => $task->name, 'done' => $task->done, 'priority' => $task->priority ])
-                ->seeStatusCode(200);
+            ->seeJsonContains(['name' => $task->name, 'done' => $task->done, 'priority' => $task->priority ])
+            ->seeStatusCode(200);
     }
     /**
      * Create fake task
@@ -74,7 +74,7 @@ class TasksAPITest extends TestCase
      */
     public function testTasksCanBePostedAndSavedIntoDatabase()
     {
-        $data = ['name' => 'Foobar', 'done' => 1, 'priority' => 1];
+        $data = ['name' => 'Foobar', 'done' => true, 'priority' => 1];
         $this->post('/task',$data)->seeInDatabase('tasks',$data);
         $this->get('/task')->seeJsonContains($data)->seeStatusCode(200);
     }
