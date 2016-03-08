@@ -18,7 +18,7 @@ class TagController extends Controller
      */
     public function __construct(TagTransformer $tagTransformer)
     {
-        $this->TagTransformer = $tagTransformer;
+        $this->tagTransformer = $tagTransformer;
         $this->middleware('auth.basic', ['only' => 'store']);
     }
 
@@ -27,16 +27,14 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($tagId = null)
     {
 
-        $tags = Tag::all();
+        //$tags = Tag::all();
 
 
-        $tag = Tag::all();
-        return $this->respond([
-            'data' => $this->tagTransformer->transformCollection($tag->all())
-        ]);
+        $tag = $this->getTags($tagId);
+        return $this->respond($this->tagTransformer->transformCollection($tag->all()));
     }
 
     /**
