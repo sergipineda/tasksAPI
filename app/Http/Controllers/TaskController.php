@@ -22,7 +22,7 @@ class TaskController extends Controller
         $this->middleware('auth.basic', ['only' => 'store']);
         $this->middleware('auth:api');
     }
-   
+
     /**
      * Display a listing of the resource.
      *
