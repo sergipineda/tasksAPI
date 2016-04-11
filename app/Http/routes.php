@@ -37,3 +37,9 @@ Route::delete('tag/{id}','TagController@destroy');
 Route::get('auth/login', function () {
     echo "Acces denied";
 });
+
+Route::group(['prefix' => 'api', 'middleware' => 'throttle:5,10'], function () {
+    Route::get('people', function () {
+        return Person::all();
+    });
+});
