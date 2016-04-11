@@ -107,7 +107,8 @@ class TasksAPITest extends TestCase
      * @group failed
      */
     public function testProtectedUrl(){
-        $this->visit('task');
+
+        $this->get('/task')->assertRedirectedTo('/auth/login');
 
 
     }

@@ -19,7 +19,7 @@ class TaskController extends Controller
     public function __construct(TaskTransformer $taskTransformer)
     {
         $this->TaskTransformer = $taskTransformer;
-        $this->middleware('auth.basic', ['only' => 'store']);
+        //$this->middleware('auth.basic', ['only' => 'store']);
         $this->middleware('auth:api');
     }
 
@@ -31,13 +31,18 @@ class TaskController extends Controller
     public function index()
     {
 
-        $tasks = Task::all();
+      $tasks = Task::all();
+//
+//
+  //$task = Task::all();
+//        return $this->respond([
+//            'data' => $this->TaskTransformer->transformCollection($task->all())
+//        ]);
 
-
-        $task = Task::all();
-        return $this->respond([
-            'data' => $this->taskTransformer->transformCollection($task->all())
-        ]);
+        return Response::json(
+            $this->TaskTransformer->transformCollection($tasks),
+            200
+        );
     }
 
     /**

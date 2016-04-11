@@ -16,10 +16,14 @@ Route::get('/', function () {
 });
 
 
-Route::get('task/{id}/tag', 'TagController@index');
-Route::resource('task', 'TaskController');
-Route::resource('tag', 'TagController');
-/*
+
+
+Route::group(['middleware' => ['web']], function () {
+    //
+});
+Route::resource('task','TaskController');
+Route::resource('tag','TagController');
+//API
 Route::get('task','TaskController@index');
 Route::get('task/{id}','TaskController@show');
 Route::post('task','TaskController@store');
@@ -29,4 +33,7 @@ Route::get('tag','TagController@index');
 Route::get('tag/{id}','TagController@show');
 Route::post('tag','TagController@store');
 Route::put('tag/{id}','TagController@update');
-Route::delete('tag/{id}','TagController@destroy');*/
+Route::delete('tag/{id}','TagController@destroy');
+Route::get('auth/login', function () {
+    echo "Acces denied";
+});
